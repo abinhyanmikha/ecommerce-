@@ -1,8 +1,101 @@
-{% extends 'base.html' %} {% block content %}
-<h2>Your Cart</h2>
-{% for i in items %}
-<p>{{ i.product.name }} x {{ i.qty }} = Rs. {{ i.subtotal }}</p>
-{% endfor %}
-<h3>Total: Rs. {{ total }}</h3>
-<a href="/checkout/">Checkout</a>
+{% extends 'base.html' %} 
+
+{% block content %}
+<div class="cart-container">
+    <div class="cart-header">
+        <h1>Shopping Cart</h1>
+        <p>You have {{ items|length }} item(s) in your cart</p>
+    </div>
+
+    {% if items %}
+        <div class="cart-grid">
+            <div class="cart-items">
+                {% for item in items %}
+                    <div class="cart-item">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="item-img">
+                        {% else %}
+                            <div class="item-img" style="display: flex; align-items: center; justify-content: center; background: #2d3748; color: #718096;">
+                                <i class="fas fa-image fa-2x"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="item-info">
+                            <h3 style="margin-bottom: 0.25rem; font-family: 'Outfit', sans-serif;">{{ item.product.name }}</h3>
+                            <p style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-muted);"><i class="fas fa-check-circle" style="color: var(--secondary); font-size: 0.7rem;"></i> {{ item.product.stock }} available • Premium</p>
+                            
+                            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                                <div class="qty-controls">
+                                    <a href="{% url 'decrease_cart' item.product.id %}" class="qty-btn" title="Decrease">
+                                        <i class="fas fa-minus"></i>
+                                    </a>
+                                    <span style="font-weight: 600; min-width: 20px; text-align: center;">{{ item.quantity }}</span>
+                                    
+                                    {% if item.quantity < item.product.stock %}
+                                        <a href="{% url 'add_to_cart' item.product.id %}" class="qty-btn" title="Increase">
+                                            <i class="fas fa-plus"></i>
+                                        </a>
+                                    {% else %}
+                                        <span class="qty-btn btn-disabled" title="Max Stock Reached" style="opacity: 0.3;">
+                                            <i class="fas fa-plus"></i>
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                
+                                <a href="{% url 'remove_from_cart' item.product.id %}" class="item-remove" style="margin-top: 0;">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="item-pricing">
+                            <div class="item-price" style="font-size: 1.25rem; font-weight: 800; color: var(--text-main);">Rs. {{ item.subtotal }}</div>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Rs. {{ item.product.price }} / unit</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-details" style="margin-top: 1.5rem;">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>Rs. {{ total_amount }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span style="color: var(--secondary);">FREE</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (Estimated)</span>
+                        <span>Rs. 0.00</span>
+                    </div>
+                    
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span>Rs. {{ total_amount }}</span>
+                    </div>
+                </div>
+                
+                <a href="{% url 'checkout' %}" class="btn-primary checkout-btn" style="display: block; text-align: center; text-decoration: none;">
+                    Proceed to Checkout <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                </a>
+                
+                <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+                    <i class="fas fa-shield-alt"></i> Secure checkout powered by AG Shop
+                </p>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-cart-state">
+            <i class="fas fa-shopping-basket"></i>
+            <h2>Your cart is looking a bit lonely</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-muted);">Explore our latest premium collection and find something you'll love.</p>
+            <a href="{% url 'home' %}" class="btn-primary">
+                Browse Products
+            </a>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

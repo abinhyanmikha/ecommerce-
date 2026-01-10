@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="checkout-container" style="max-width: 1000px; margin: 0 auto;">
+    <div class="cart-header">
+        <h1>Complete Your Order</h1>
+        <p>Secure encryption is active <i class="fas fa-lock" style="color: var(--secondary); margin-left: 0.5rem;"></i></p>
+    </div>
+
+    {% if items %}
+        <div class="cart-grid">
+            <!-- Payment Form -->
+            <div class="payment-section" style="background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 2.5rem;">
+                <h3 style="margin-bottom: 2rem; font-family: 'Outfit', sans-serif;"><i class="fas fa-credit-card" style="margin-right: 0.75rem; color: var(--primary);"></i> Payment Method</h3>
+                
+                <form method="post" id="checkout-form">
+                    {% csrf_token %}
+                    
+                    <div class="payment-options" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem;">
+                        <label class="payment-card active" style="transition: all 0.3s ease; border: 1px solid var(--primary); background: rgba(99, 102, 241, 0.1); padding: 1.25rem; border-radius: 16px; cursor: pointer; display: flex; align-items: center; gap: 1rem;">
+                            <input type="radio" name="payment_method" value="COD" checked style="accent-color: var(--primary);">
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">Cash on Delivery</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">Pay when you receive your package</div>
+                            </div>
+                            <i class="fas fa-truck fa-lg" style="color: var(--primary);"></i>
+                        </label>
+
+                        <label class="payment-card" style="transition: all 0.3s ease; border: 1px solid var(--border); padding: 1.25rem; border-radius: 16px; cursor: pointer; display: flex; align-items: center; gap: 1rem;">
+                            <input type="radio" name="payment_method" value="CARD" style="accent-color: var(--primary);">
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">Credit / Debit Card</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">Secure payment via Stripe</div>
+                            </div>
+                            <i class="fab fa-cc-visa fa-lg" style="color: var(--text-muted);"></i>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-primary checkout-btn" style="width: 100%; padding: 1.2rem; font-size: 1.1rem;">
+                        Place Order Now <i class="fas fa-check-circle" style="margin-left: 0.5rem;"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Side Summary -->
+            <div class="cart-summary">
+                <h3 style="margin-bottom: 1.5rem;">Order Review</h3>
+                <div class="checkout-items" style="max-height: 300px; overflow-y: auto; margin-bottom: 2rem; padding-right: 0.5rem;">
+                    {% for item in items %}
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.9rem;">
+                            <span style="color: var(--text-muted);">{{ item.product.name }} <span style="font-size: 0.75rem;">x{{ item.quantity }}</span></span>
+                            <span style="font-weight: 600;">Rs. {{ item.subtotal }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="summary-details">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>Rs. {{ total_amount }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping Cost</span>
+                        <span style="color: var(--secondary);">FREE</span>
+                    </div>
+                    <div class="summary-row total" style="font-size: 1.25rem;">
+                        <span>Total Due</span>
+                        <span style="color: var(--primary);">Rs. {{ total_amount }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-cart-state">
+            <i class="fas fa-shopping-cart"></i>
+            <h2>Nothing here to checkout</h2>
+            <a href="{% url 'home' %}" class="btn-primary">Browse Shop</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    // Simple UI interaction for payment selection highlight
+    document.querySelectorAll('.payment-card').forEach(card => {
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.payment-card').forEach(c => {
+                c.style.borderColor = 'var(--border)';
+                c.style.background = 'transparent';
+                c.querySelector('i').style.color = 'var(--text-muted)';
+            });
+            card.style.borderColor = 'var(--primary)';
+            card.style.background = 'rgba(99, 102, 241, 0.1)';
+            card.querySelector('i').style.color = 'var(--primary)';
+        });
+    });
+</script>
+{% endblock %}

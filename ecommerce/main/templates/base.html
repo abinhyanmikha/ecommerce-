@@ -1,20 +1,60 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>E-Commerce</title>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity Shop | Modern Ecommerce</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/style.css" />
-  </head>
-  <body>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/cart/">Cart</a>
-      {% if user.is_authenticated %}
-      <a href="/logout/">Logout</a>
-      {% else %}
-      <a href="/login/">Login</a>
-      {% endif %}
-    </nav>
-    <hr />
-    {% block content %}{% endblock %}
-  </body>
+</head>
+<body>
+    <header class="glass-nav">
+        <nav class="container">
+            <a href="/" class="logo">
+                <span class="logo-icon"><i class="fas fa-bolt"></i></span>
+                AG<span>SHOP</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
+                <a href="/cart/" class="cart-link {% if request.path == '/cart/' %}active{% endif %}">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Cart</span>
+                    <!-- Cart count badge could go here -->
+                </a>
+                {% if user.is_authenticated %}
+                    <div class="user-menu">
+                        <span class="user-greeting">Hi, {{ user.username }}</span>
+                        <a href="/logout/" class="btn-outline">Logout</a>
+                    </div>
+                {% else %}
+                    <a href="/login/" class="btn-primary">Login</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="container main-content animate-fade">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 AG Shop. Premium Experience.</p>
+        </div>
+    </footer>
+</body>
 </html>
