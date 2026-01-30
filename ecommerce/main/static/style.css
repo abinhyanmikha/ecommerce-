@@ -384,3 +384,26 @@ footer {
         font-size: 2rem;
     }
 }
+
+/* Order Status Tags */
+.status-tag {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-delivered {
+    background: #ecfdf5;
+    color: #065f46;
+}
+
+.status-shipped {
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+.status-pending {
+    background: #fffbeb;
+    color: #92400e;
+}

@@ -28,6 +28,7 @@
                 </a>
                 {% if user.is_authenticated %}
                     <div class="user-menu">
+                        <a href="/profile/" class="{% if '/profile/' in request.path %}active{% endif %}" style="margin-right: 0.5rem; color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 0.9rem;">Profile</a>
                         <span class="user-greeting">Hi, {{ user.username }}</span>
                         <a href="/logout/" class="btn-outline">Logout</a>
                     </div>
